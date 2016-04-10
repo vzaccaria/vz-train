@@ -1,4 +1,5 @@
 Usage:
+    vz-train
     vz-train ( -h | --help )
 
 Options:

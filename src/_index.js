@@ -4,11 +4,23 @@ const {
     // $r.stdin() -> Promise  ;; to read from stdin
 } = require('zaccaria-cli')
 
-const path = require('path')
-
-const debug = require('debug')
 const shelljs = $s
 const bluebird = $b
+let superagent = require('superagent')
+superagent = require('superagent-promise')(superagent, bluebird);
+
+let moment = require('moment')
+const path = require('path')
+const debug = require('debug')
+
+
+
+let _module = require('./module');
+
+_module = _module({
+    _, shelljs, bluebird, superagent, moment
+})
+
 
 let readLocal = f => {
     const curdir = path.dirname($fs.realpathSync(__filename));
@@ -33,14 +45,14 @@ const main = () => {
         } = getOptions(it);
         if (help) {
             console.log(it)
+        } else {
+            _module.trainStatus('S01301', 'S01700', '25529').then((v) => {
+                console.log(v)
+            })
         }
     })
 }
 
-let _module = require('./module');
-_module = _module({
-    debug, _, shelljs, bluebird
-})
 
 module.exports = _.assign({
     main
