@@ -18,7 +18,7 @@ generateProject(_ => {
         _.cmd("./node_modules/.bin/mustache package.json docs/readme.md | ./node_modules/.bin/stupid-replace '~USAGE~' -f docs/usage.md > readme.md")
         _.cmd("cat history.md >> readme.md")
         _.cmd("mkdir -p ./man/man1")
-        _.cmd("pandoc -s -f markdown -t man readme.md > ./man/man1/vz-dockerino.1")
+        _.cmd("pandoc -s -f markdown -t man readme.md > ./man/man1/vz-train.1")
         _.cmd("-hub cm 'update docs and history.md'")
     })
 
