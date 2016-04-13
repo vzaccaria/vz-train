@@ -12,6 +12,9 @@ superagent = require('superagent-promise')(superagent, bluebird);
 let moment = require('moment')
 const path = require('path')
 const debug = require('debug')
+let {
+    registerBot
+} = require('./bot')
 
 
 
@@ -33,21 +36,43 @@ const getOptions = doc => {
     "use strict"
     const o = $d(doc)
     const help = $o('-h', '--help', false, o)
+    const bot = o.bot
+    const test = o.test
     return {
-        help
+        help, bot, test
     }
 }
 
 const main = () => {
     readLocal('docs/usage.md').then(it => {
         const {
-            help
+            help, bot, test
         } = getOptions(it);
         if (help) {
             console.log(it)
-        } else {
+        } else if (test) {
             _module.trainStatus('S01301', 'S01700', '25529').then((v) => {
                 console.log(v)
+            })
+        } else if (bot) {
+            let {
+                onCommand
+            } = registerBot()
+            onCommand('echo', ({
+                argument, bot, msg
+            }) => {
+                let fromId = msg.from.id
+                bot.sendMessage(fromId, argument)
+            })
+            onCommand("dimmi chi e'", ({
+                argument, bot, msg
+            }) => {
+                let fromId = msg.from.id
+                if (argument === "Chiara") {
+                    bot.sendMessage(fromId, "Il tuo *amore*!")
+                } else {
+                    bot.sendMessage(fromId, "mah, non saprei")
+                }
             })
         }
     })

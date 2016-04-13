@@ -87,7 +87,6 @@ describe('#module', () => {
         return _module.trainStatus('S01301', 'S01700', '25527').then((v) => {
             expect(v.ritardo).to.be.equal(3)
             expect(v.binarioArrivo).to.be.equal(8)
-            console.log(v);
         })
     })
 

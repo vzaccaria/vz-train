@@ -1,5 +1,6 @@
 Usage:
-    vz-train
+    vz-train test
+    vz-train bot
     vz-train ( -h | --help )
 
 Options:

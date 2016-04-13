@@ -1,2 +1,4 @@
 node_modules
 makefile
+TELEGRAM_TOKEN.sh
+lib/flycheck*

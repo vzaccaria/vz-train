@@ -3,11 +3,12 @@ let andamentoTreno = (sp, tn) => `http://www.viaggiatreno.it/viaggiatrenonew/res
 let _module = ({
     _, shelljs, bluebird, superagent, moment
 }) => {
-    let m = [ _, bluebird, shelljs, superagent, moment ]
+    let m = [_, bluebird, shelljs, superagent, moment]
     if (_.any(m, _.isUndefined)) {
         throw `some modules undefined ${_.map(m, _.isUndefined)}}`
     }
 
+    let watchList = {}
 
     let execAsync = (cmd) => {
         return new bluebird((resolve) => {
@@ -20,6 +21,30 @@ let _module = ({
             })
         })
     }
+
+    let checkStatus = (tn, cb) => {
+        if (_.isUndefined(watchList[tn])) {
+            cb(1, {
+                message: "sorry, train does not exist"
+            })
+        } else {
+            cb(1, watchList[tn]);
+        }
+    }
+
+    let _refreshData = (sp, sa, tn) => {
+        trainStatus(sp, sa, tn).then((dati) => {
+            watchList[tn] = {
+                numero: tn,
+                partenza: sp,
+                arrivo: sa,
+                treno: tn,
+                ultimiDati: dati,
+                aggiornato: moment()
+            }
+        })
+    }
+
 
     let trainStatus = (sp, sa, tn) => {
         // for testing purposes, only get is stubbed
@@ -38,6 +63,7 @@ let _module = ({
 
             _.map(['arrivoTeorico', 'orarioPartenza', 'orarioArrivo', 'arrivoReale'], (e) => {
                 data[`${e}Humanized`] = moment(data[e]).format("DD/MM/YY HH:mm")
+                data[`${e}Moment`] = moment(data[e])
             })
             return _.assign(ris, data)
         })
@@ -47,7 +73,9 @@ let _module = ({
         readHelp: () => {
             return execAsync('cat ../docs/usage.md')
         },
-        trainStatus: trainStatus
+        trainStatus: trainStatus,
+        checkStatus: checkStatus,
+        addToWatchList: _refreshData
 
     }
 }

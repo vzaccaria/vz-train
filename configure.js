@@ -16,6 +16,8 @@ generateProject(_ => {
     _.collect("docs", _ => {
         _.cmd("./node_modules/.bin/git-hist history.md")
         _.cmd("./node_modules/.bin/mustache package.json docs/readme.md | ./node_modules/.bin/stupid-replace '~USAGE~' -f docs/usage.md > readme.md")
+        _.cmd("./node_modules/.bin/markdox ./src/module.js -o docs/api.md")
+        _.cmd("cat docs/api.md >> readme.md")
         _.cmd("cat history.md >> readme.md")
         _.cmd("mkdir -p ./man/man1")
         _.cmd("pandoc -s -f markdown -t man readme.md > ./man/man1/vz-train.1")
@@ -44,6 +46,10 @@ generateProject(_ => {
         _.collect("build", _ => {
             _.cmd("./node_modules/.bin/babel src -d lib --presets es2015,stage-2")
         })
+    })
+
+    _.collectSeq("launchbot", _ => {
+        _.cmd("./node_modules/.bin/nodemon -w ./lib ./lib/index.js -- bot")
     })
 
     _.collect("test", _ => {
