@@ -84,7 +84,13 @@ describe('#module', () => {
         expect(_module.trainStatus).to.exist
     })
     it('#trainStatus should return expected data on request', () => {
-        return _module.trainStatus('S01301', 'S01700', '25527').then((v) => {
+        let data = {
+            partenza: 'S01301',
+            arrivo: 'S01700',
+            treno: '25527',
+            nome: 'test'
+        }
+        return _module.trainStatus(data).then((v) => {
             expect(v.ritardo).to.be.equal(3)
             expect(v.binarioArrivo).to.be.equal(8)
         })

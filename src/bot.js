@@ -3,7 +3,6 @@ var Rx = require('rx')
 
 let _module = () => {
 
-
     return {
 
         registerBot: () => {
@@ -13,16 +12,31 @@ let _module = () => {
                 polling: true
             });
 
-            let onCommand = function(text, whatToDo) {
+            let onCustomCommand = function(text, whatToDo) {
+                let re = new RegExp(`\/${text}_(.+)`);
+                bot.onText(re, function(msg, match) {
+                    let argument = match[1]
+                    whatToDo({argument, bot, msg})
+                })
+
+            }
+
+            let onCommandWithArg = function(text, whatToDo) {
                 let re = new RegExp(`\/${text} (.+)`);
                 bot.onText(re, function(msg, match) {
-                    console.log(JSON.stringify({msg, match}, 0, 4));
                     let argument = match[1]
                     whatToDo({argument, bot, msg})
                 })
             }
 
-            return { bot, onCommand }
+            let onCommand = function(text, whatToDo) {
+                let re = new RegExp(`\/${text}`);
+                bot.onText(re, function(msg, match) {
+                    whatToDo({bot, msg})
+                })
+            }
+
+            return { bot, onCommand, onCommandWithArg, onCustomCommand }
         }
     }
 }

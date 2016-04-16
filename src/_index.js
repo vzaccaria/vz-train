@@ -43,6 +43,62 @@ const getOptions = doc => {
     }
 }
 
+function tronca(i) {
+   return _.trunc(i, {
+       length: 4,
+       omission: ''
+   })    
+}
+
+function formatInfo(i) {
+    let binarioArrivo = "NA"
+    let stazioneUltimoRilevamento = "NA"
+    if(!_.isNaN(i.binarioArrivo)) {
+        binarioArrivo = i.binarioArrivo 
+    }
+    if(i.stazioneUltimoRilevamento !== "--") {
+        stazioneUltimoRilevamento = i.stazioneUltimoRilevamento
+    }
+    return `Rit: ${i.ritardo}m, Bin: ${binarioArrivo}, Visto: ${tronca(stazioneUltimoRilevamento)}, Dst: ${tronca(i.destinazione)} [${i.dovrebbeArrivareAlle}]`
+}
+
+function registerCommands({
+    onCommand, onCommandWithArg, onCustomCommand
+}) {
+    onCommandWithArg('echo', ({
+        argument, bot, msg
+    }) => {
+        let fromId = msg.from.id
+        bot.sendMessage(fromId, argument)
+    })
+    onCommand("lista", ({
+        argument, bot, msg
+    }) => {
+        let fromId = msg.from.id
+        _module.getList().then( l => {
+            let m = _.map(l, (v) => `/treno_${v.nome}: ${formatInfo(v)}`).join("\n")
+            m = "Treni di cui sono informato\n" + m
+            bot.sendMessage(fromId, m)
+        })
+    })
+    onCustomCommand('treno', ({
+        argument, bot, msg
+    }) => {
+        let fromId = msg.from.id
+        _module.checkStatus(argument).then( l => {
+            let m =  _.map(l, formatInfo).join("\n");
+            m = `Alle ${moment().format("HH:mm")}: \n` + m
+            bot.sendMessage(fromId, m)
+        })
+    })
+    _module.addToWatchList('S01301', 'S01700', '25509', 'mattina_7e13')
+    _module.addToWatchList('S01301', 'S01700', '25511', 'mattina_8e13')
+    _module.addToWatchList('S01301', 'S01700', '25513', 'mattina_9e13')
+    _module.addToWatchList('S01301', 'S01700', '25529', 'pome_1810')
+    _module.addToWatchList('S01301', 'S01700', '25531', 'pome_1910')
+    _module.addToWatchList('S01301', 'S01700', '25533', 'pome_2010')
+}
+
 const main = () => {
     readLocal('docs/usage.md').then(it => {
         const {
@@ -52,28 +108,9 @@ const main = () => {
             console.log(it)
         } else if (test) {
             _module.trainStatus('S01301', 'S01700', '25529').then((v) => {
-                console.log(v)
             })
         } else if (bot) {
-            let {
-                onCommand
-            } = registerBot()
-            onCommand('echo', ({
-                argument, bot, msg
-            }) => {
-                let fromId = msg.from.id
-                bot.sendMessage(fromId, argument)
-            })
-            onCommand("dimmi chi e'", ({
-                argument, bot, msg
-            }) => {
-                let fromId = msg.from.id
-                if (argument === "Chiara") {
-                    bot.sendMessage(fromId, "Il tuo *amore*!")
-                } else {
-                    bot.sendMessage(fromId, "mah, non saprei")
-                }
-            })
+            registerCommands(registerBot())
         }
     })
 }
