@@ -1,6 +1,11 @@
 /* eslint quotes: [0], strict: [0] */
 const {
-    _, $d, $o, $fs, $b, $s
+    _,
+    $d,
+    $o,
+    $fs,
+    $b,
+    $s
     // $r.stdin() -> Promise  ;; to read from stdin
 } = require('zaccaria-cli')
 
@@ -21,7 +26,11 @@ let {
 let _module = require('./module');
 
 _module = _module({
-    _, shelljs, bluebird, superagent, moment
+    _,
+    shelljs,
+    bluebird,
+    superagent,
+    moment
 })
 
 
@@ -39,61 +48,87 @@ const getOptions = doc => {
     const bot = o.bot
     const test = o.test
     return {
-        help, bot, test
+        help,
+        bot,
+        test
     }
 }
 
 function tronca(i) {
-   return _.trunc(i, {
-       length: 4,
-       omission: ''
-   })    
+    return _.trunc(i, {
+        length: 4,
+        omission: ''
+    })
+}
+
+function formatStazione(stazione, ora) {
+    let s = stazione;
+    if (!ora.isValid()) {
+        return `(**, **)`
+    } else {
+        return `(${s}, ${ora.format('HH:mm')})`
+    }
 }
 
 function formatInfo(i) {
-    let binarioArrivo = "NA"
-    let stazioneUltimoRilevamento = "NA"
-    if(!_.isNaN(i.binarioArrivo)) {
-        binarioArrivo = i.binarioArrivo 
+    let binarioArrivo = "**"
+    let SUR = "**"
+    if (!_.isNaN(i.binarioArrivo)) {
+        binarioArrivo = i.binarioArrivo
     }
-    if(i.stazioneUltimoRilevamento !== "--") {
-        stazioneUltimoRilevamento = i.stazioneUltimoRilevamento
+    if (i.stazioneUltimoRilevamento !== "--") {
+        SUR = i.stazioneUltimoRilevamento
     }
-    return `Rit: ${i.ritardo}m, Bin: ${binarioArrivo}, Visto: ${tronca(stazioneUltimoRilevamento)}, Dst: ${tronca(i.destinazione)} [${i.dovrebbeArrivareAlle}]`
+    let rile = formatStazione(SUR, i.oraUltimoRilevamentoMoment)
+    let dst = formatStazione(i.destinazione, i.arrivoTeoricoMoment)
+    return `<strong>${i.ritardo}m</strong> B${binarioArrivo} @${rile}`
+        //`, @${tronca(stazioneUltimoRilevamento)}, Dst: ${tronca(i.destinazione)} [${i.dovrebbeArrivareAlle}]`
 }
 
 function registerCommands({
-    onCommand, onCommandWithArg, onCustomCommand
+    onCommand,
+    onCommandWithArg,
+    onCustomCommand
 }) {
     onCommandWithArg('echo', ({
-        argument, bot, msg
+        argument,
+        bot,
+        msg
     }) => {
         let fromId = msg.from.id
         bot.sendMessage(fromId, argument)
     })
     onCommand("lista", ({
-        argument, bot, msg
+        argument,
+        bot,
+        msg
     }) => {
         let fromId = msg.from.id
-        _module.getList().then( l => {
+        _module.getList().then(l => {
             let m = _.map(l, (v) => `/treno_${v.nome}: ${formatInfo(v)}`).join("\n")
             m = "Treni di cui sono informato\n" + m
-            bot.sendMessage(fromId, m)
+            bot.sendMessage(fromId, m, {
+                parse_mode: 'HTML'
+            })
         })
     })
     onCustomCommand('treno', ({
-        argument, bot, msg
+        argument,
+        bot,
+        msg
     }) => {
         let fromId = msg.from.id
-        _module.checkStatus(argument).then( l => {
-            let m =  _.map(l, formatInfo).join("\n");
-            m = `Alle ${moment().format("HH:mm")}: \n` + m
-            bot.sendMessage(fromId, m)
+        _module.checkStatus(argument).then(l => {
+            let m = _.map(l, formatInfo).join("\n");
+            bot.sendMessage(fromId, m, {
+                parse_mode: 'HTML'
+            })
         })
     })
     _module.addToWatchList('S01301', 'S01700', '25509', 'mattina_7e13')
     _module.addToWatchList('S01301', 'S01700', '25511', 'mattina_8e13')
     _module.addToWatchList('S01301', 'S01700', '25513', 'mattina_9e13')
+    _module.addToWatchList('S01301', 'S01700', '25527', 'pome_1710')
     _module.addToWatchList('S01301', 'S01700', '25529', 'pome_1810')
     _module.addToWatchList('S01301', 'S01700', '25531', 'pome_1910')
     _module.addToWatchList('S01301', 'S01700', '25533', 'pome_2010')
@@ -102,13 +137,14 @@ function registerCommands({
 const main = () => {
     readLocal('docs/usage.md').then(it => {
         const {
-            help, bot, test
+            help,
+            bot,
+            test
         } = getOptions(it);
         if (help) {
             console.log(it)
         } else if (test) {
-            _module.trainStatus('S01301', 'S01700', '25529').then((v) => {
-            })
+            _module.trainStatus('S01301', 'S01700', '25529').then((v) => {})
         } else if (bot) {
             registerCommands(registerBot())
         }
