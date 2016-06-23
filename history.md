@@ -1,6 +1,7 @@
 
 # New features
 
+-     add autobus to ST -- [Jun 23rd 16](../../commit/a698784580d7886e248d423f4f59baa60220358e)
 -     update docker file -- [Apr 16th 16](../../commit/daa934bdfcf33ee56c409b1b1b40835c90793166)
 -     watch a predetermined list of trains -- [Apr 16th 16](../../commit/1eab2d104765e2c7e6f441162dace22906dcf916)
 -     use TelegramBot -- [Apr 13th 16](../../commit/e6f9bf8c5e1e07b9528cfe916d2bb531decd131c)
