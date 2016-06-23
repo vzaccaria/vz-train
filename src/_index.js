@@ -105,8 +105,8 @@ function getListaAutobus() {
     }];
     let m = "";
     _.map(data, (e) => {
-        m = m + `\n${e.msg}:\n  ` + _.map(e.lista, (v) => {
-            return `${v.corsa}: ${v.valori.join(', ')}`;
+        m = m + `\n\n${e.msg}:\n  ` + _.map(e.lista, (v) => {
+            return `<strong>${v.corsa}</strong>: ${v.valori.join(', ')}`;
         }).join('\n  ');
     }).join('\n ');
     return m;
@@ -139,7 +139,7 @@ function registerCommands({
             });
         });
     });
-    onCommandWithArg('st', ({
+    onCommand('st', ({
         argument,
         bot,
         msg
