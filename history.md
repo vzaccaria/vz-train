@@ -10,4 +10,5 @@
 
 # Bug fixes
 
+-     invoke command without arg -- [Jun 23rd 16](../../commit/d242e1ee52b39a56b721a0fd36de36549c9265f8)
 -     clean up the messages -- [Apr 28th 16](../../commit/b8a6ed100ebc5857935210a512485397056dd13b)
