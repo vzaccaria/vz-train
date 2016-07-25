@@ -14,6 +14,9 @@ const bluebird = $b;
 let superagent = require('superagent');
 superagent = require('superagent-promise')(superagent, bluebird);
 
+let { setupTrenordTrains } = require('./trenord')
+
+
 let moment = require('moment');
 const path = require('path');
 const debug = require('debug');
@@ -54,12 +57,12 @@ const getOptions = doc => {
     };
 }
 
-function tronca(i) {
-    return _.trunc(i, {
-        length: 4,
-        omission: ''
-    });
-}
+// function tronca(i) {
+//     return _.trunc(i, {
+//         length: 4,
+//         omission: ''
+//     });
+// }
 
 function formatStazione(stazione, ora) {
     let s = stazione;
@@ -81,7 +84,7 @@ function formatInfo(i) {
     }
     let rile = formatStazione(SUR, i.oraUltimoRilevamentoMoment);
     let dst = formatStazione(i.destinazione, i.arrivoTeoricoMoment);
-    return `<strong>${i.ritardo}m</strong> B${binarioArrivo} @${rile}`;
+    return `<strong>${i.ritardo}m</strong> // ${binarioArrivo} @${rile}`;
     //`, @${tronca(stazioneUltimoRilevamento)}, Dst: ${tronca(i.destinazione)} [${i.dovrebbeArrivareAlle}]`
 }
 
@@ -163,13 +166,7 @@ function registerCommands({
             });
         });
     });
-    _module.addToWatchList('S01301', 'S01700', '25509', 'mattina_7e13');
-    _module.addToWatchList('S01301', 'S01700', '25511', 'mattina_8e13');
-    _module.addToWatchList('S01301', 'S01700', '25513', 'mattina_9e13');
-    _module.addToWatchList('S01301', 'S01700', '25527', 'pome_1710');
-    _module.addToWatchList('S01301', 'S01700', '25529', 'pome_1810');
-    _module.addToWatchList('S01301', 'S01700', '25531', 'pome_1910');
-    _module.addToWatchList('S01301', 'S01700', '25533', 'pome_2010');
+    setupTrenordTrains(_module);
 }
 
 const main = () => {
