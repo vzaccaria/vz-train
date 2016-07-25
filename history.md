@@ -1,6 +1,7 @@
 
 # New features
 
+-     update dockerfile -- [Jul 13th 16](../../commit/9dab7f149ccdaebc0e5146593e518e33a1d40e2e)
 -     add autobus to ST -- [Jun 23rd 16](../../commit/a698784580d7886e248d423f4f59baa60220358e)
 -     update docker file -- [Apr 16th 16](../../commit/daa934bdfcf33ee56c409b1b1b40835c90793166)
 -     watch a predetermined list of trains -- [Apr 16th 16](../../commit/1eab2d104765e2c7e6f441162dace22906dcf916)
@@ -12,3 +13,7 @@
 
 -     invoke command without arg -- [Jun 23rd 16](../../commit/d242e1ee52b39a56b721a0fd36de36549c9265f8)
 -     clean up the messages -- [Apr 28th 16](../../commit/b8a6ed100ebc5857935210a512485397056dd13b)
+
+# Refactorings
+
+-     make it future proof -- [Jul 25th 16](../../commit/e7938a52d50f61cbdb8024efe70b8de4ee3b4b35)
