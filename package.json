@@ -1,6 +1,6 @@
 {
   "name": "vz-train",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "a small module with functions to access remote train API",
   "main": "./lib/index.js",
   "bin": {
