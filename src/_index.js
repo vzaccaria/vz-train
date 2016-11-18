@@ -128,6 +128,7 @@ function registerCommands({
         let fromId = msg.from.id;
         bot.sendMessage(fromId, argument);
     });
+
     onCommand("lista", ({
         argument,
         bot,
@@ -142,6 +143,17 @@ function registerCommands({
             });
         });
     });
+
+    onCommand("ultimi", ({
+        argument,
+        bot,
+        msg
+    }) => {
+        let fromId = msg.from.id;
+        let l = _module.getURivMap();
+        bot.sendMessage(fromId, JSON.stringify(l, 0, 4));
+    });
+
     onCommand('st', ({
         argument,
         bot,
